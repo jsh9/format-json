@@ -61,3 +61,10 @@ repos:
     hooks:
       - id: markdown-toc-creator
         exclude: ^tests/test_data/
+  - repo: local
+    hooks:
+      - id: ensure-pretty-format-json-upstream
+        name: Ensure upstream pretty_format_json.py is unchanged
+        language: system
+        entry: python .pre_commit_hook_script/ensure_pretty_format_json_commit.py
+        pass_filenames: false
