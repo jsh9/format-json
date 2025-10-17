@@ -33,6 +33,7 @@ def main() -> int:
                     f'expected HTTP 200 but received {resp.status}.',
                 )
                 return 1
+
             try:
                 payload = json.load(resp)
             except json.JSONDecodeError as exc:
@@ -43,7 +44,9 @@ def main() -> int:
         return 1
 
     if not payload:
-        print('Received empty commit history from GitHub; cannot verify status.')
+        print(
+            'Received empty commit history from GitHub; cannot verify status.'
+        )
         return 1
 
     latest_commit = payload[0]['sha']
