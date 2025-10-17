@@ -69,7 +69,8 @@ Add the hook to your `.pre-commit-config.yaml`:
 
 ## 4. Instructions for Maintainers
 
-- Run `pip install -e .[dev]` to install development dependencies.
+- Run `pip install -e .` to install this project in the "editable" mode.
+- Run `pip install -r requirements.dev` to install developer dependencies.
 - Run `pytest` to execute the automated tests replicated from the upstream
   project.
 - Use `tox` to exercise the full test matrix, linting, and formatting targets.
