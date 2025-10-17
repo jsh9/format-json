@@ -7,9 +7,7 @@ import shutil
 
 import pytest
 
-from format_json.main import main
-from format_json.main import parse_num_to_int
-
+from format_json.main import main, parse_num_to_int
 
 RESOURCE_DIR = os.path.abspath(os.path.dirname(__file__))
 

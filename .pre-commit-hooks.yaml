@@ -1,9 +1,7 @@
 ---
 - id: format-json
-  name: format-json
+  name: Format JSON files
+  description: Formats JSON files to some pre-configured style
   entry: format-json
   language: python
-  require_serial: false
-  files: \.(json|json5)$
-  description: Format JSON files with configurable indentation, sorting, and trailing
-    newline handling.
+  types: [json]
