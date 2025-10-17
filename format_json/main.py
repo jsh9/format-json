@@ -1,3 +1,5 @@
+# Adapted from https://github.com/pre-commit/pre-commit-hooks/blob/3fed74c572621f74eaffba6603801d153ffe5ce0/pre_commit_hooks/pretty_format_json.py
+
 from __future__ import annotations
 
 import argparse
