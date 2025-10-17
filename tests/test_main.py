@@ -32,6 +32,7 @@ def test_parse_num_to_int():
         ('unsorted_pretty_formatted_json.json', 1),
         ('non_ascii_pretty_formatted_json.json', 1),
         ('pretty_formatted_json.json', 0),
+        ('pretty_formatted_json_no_eof_newline.json', 1),
     ),
 )
 def test_main(filename, expected_retval):
@@ -90,6 +91,43 @@ def test_autofix_main(tmpdir):
 
     # file was formatted (shouldn't trigger linter again)
     ret = main([str(srcfile)])
+    assert ret == 0
+
+
+@pytest.mark.parametrize(
+    ('extra_args', 'expect_newline'),
+    (
+        ((), True),
+        (('--no-eof-newline',), False),
+    ),
+)
+def test_no_eof_newline_behavior(tmpdir, extra_args, expect_newline):
+    srcfile = tmpdir.join('newline_behavior.json')
+    shutil.copyfile(
+        get_resource_path('not_pretty_formatted_json.json'),
+        str(srcfile),
+    )
+
+    ret = main(['--autofix', *extra_args, str(srcfile)])
+    assert ret == 1
+
+    contents = srcfile.read()
+    if expect_newline:
+        assert contents.endswith('\n')
+        assert not contents.endswith('\n\n')
+    else:
+        assert contents.endswith('}')
+        assert not contents.endswith('\n')
+
+    check_args = [*extra_args, str(srcfile)]
+    assert main(check_args) == 0
+
+
+def test_no_eof_newline_already_formatted():
+    ret = main((
+        '--no-eof-newline',
+        get_resource_path('pretty_formatted_json_no_eof_newline.json'),
+    ))
     assert ret == 0
 
 
