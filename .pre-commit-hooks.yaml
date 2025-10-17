@@ -1,0 +1,9 @@
+---
+- id: format-json
+  name: format-json
+  entry: format-json
+  language: python
+  require_serial: false
+  files: \.(json|json5)$
+  description: Format JSON files with configurable indentation, sorting, and trailing
+    newline handling.
