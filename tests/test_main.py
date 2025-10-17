@@ -5,11 +5,6 @@ from pathlib import Path
 import pytest
 
 from format_json.main import main as format_json
-from tests.test_data.util import get_resource_path
-
-
-def read_resource(name: str) -> str:
-    return Path(get_resource_path(name)).read_text(encoding='UTF-8')
 
 
 def test_autofix_adds_trailing_newline_by_default(tmp_path: Path) -> None:
