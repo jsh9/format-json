@@ -20,9 +20,9 @@ pre-commit hook, with only one difference, as seen below.
 
 ## 1. How does `format-json` differs from `pretty-format-json`?
 
-| Feature                                       | format-json | pretty-format-json |
-| --------------------------------------------- | ----------- | ------------------ |
-| Config option to **not** add trailing newline | ✅          | ❌                 |
+| Feature                            | format-json | pretty-format-json |
+| ---------------------------------- | ----------- | ------------------ |
+| Config option for trailing newline | ✅          | ❌                 |
 
 ## 2. Why a separate project from `pretty-format-json`?
 
