@@ -5,14 +5,14 @@ from __future__ import annotations
 import argparse
 import json
 import sys
-from collections.abc import Iterator, Mapping, Sequence
+from collections.abc import Callable, Iterator, Mapping, Sequence
 from difflib import unified_diff
-from json.encoder import (
+from json.encoder import (  # type:ignore[attr-defined]
     _make_iterencode,
     encode_basestring,
     encode_basestring_ascii,
 )
-from typing import cast
+from typing import Any
 
 
 class OriginalTokenFloat(float):
@@ -23,7 +23,8 @@ class OriginalTokenFloat(float):
     raw: str
 
     def __new__(cls, value: str) -> OriginalTokenFloat:
-        obj = cast(OriginalTokenFloat, super().__new__(cls, float(value)))
+        """Instantiate an `OriginalTokenFloat` while storing the raw token."""
+        obj = super().__new__(cls, float(value))
         obj.raw = value
         return obj
 
@@ -32,6 +33,7 @@ class DecimalPreservingEncoder(json.JSONEncoder):
     """JSON encoder that keeps high precision floats exactly as provided."""
 
     def iterencode(self, o: object, _one_shot: bool = False) -> Iterator[str]:
+        """Yield encoded chunks while preserving original float lexemes."""
         if self.check_circular:
             markers: dict[int, object] | None = {}
         else:
@@ -45,9 +47,9 @@ class DecimalPreservingEncoder(json.JSONEncoder):
         def floatstr(
                 value: float,
                 allow_nan: bool = self.allow_nan,
-                _repr=repr,
-                _inf=float('inf'),
-                _neginf=-float('inf'),
+                _repr: Callable[..., Any] = repr,
+                _inf: float = float('inf'),
+                _neginf: float = -float('inf'),
         ) -> str:
             if isinstance(value, OriginalTokenFloat):
                 return value.raw
@@ -59,7 +61,7 @@ class DecimalPreservingEncoder(json.JSONEncoder):
             elif value == _neginf:
                 text = '-Infinity'
             else:
-                return _repr(value)
+                return _repr(value)  # type:ignore[no-any-return]
 
             if not allow_nan:
                 raise ValueError(
@@ -88,7 +90,7 @@ class DecimalPreservingEncoder(json.JSONEncoder):
             self.skipkeys,
             _one_shot,
         )
-        return _iterencode(o, 0)
+        return _iterencode(o, 0)  # type:ignore[no-any-return]
 
 
 def _get_pretty_format(
