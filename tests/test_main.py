@@ -31,6 +31,7 @@ def test_parse_num_to_int():
         ('non_ascii_pretty_formatted_json.json', 1),
         ('pretty_formatted_json.json', 0),
         ('pretty_formatted_json_no_eof_newline.json', 1),
+        ('high_precision_float_formatted.json', 0),
     ),
 )
 def test_main(filename, expected_retval):
@@ -45,6 +46,7 @@ def test_main(filename, expected_retval):
         ('unsorted_pretty_formatted_json.json', 0),
         ('non_ascii_pretty_formatted_json.json', 1),
         ('pretty_formatted_json.json', 0),
+        ('high_precision_float_formatted.json', 0),
     ),
 )
 def test_unsorted_main(filename, expected_retval):

@@ -9,34 +9,25 @@ pre-commit hook, with only one difference, as seen below.
 
 <!--TOC-->
 
-- [1. How does `format-json` differs from `pretty-format-json`?](#1-how-does-format-json-differs-from-pretty-format-json)
-- [2. Why a separate project from `pretty-format-json`?](#2-why-a-separate-project-from-pretty-format-json)
-- [3. Usage](#3-usage)
-  - [3.1. As a command-line tool](#31-as-a-command-line-tool)
-  - [3.2. As a pre-commit hook](#32-as-a-pre-commit-hook)
-- [4. Instructions for Maintainers](#4-instructions-for-maintainers)
+- [1. `format-json` vs `pretty-format-json`](#1-format-json-vs-pretty-format-json)
+- [2. Usage](#2-usage)
+  - [2.1. As a command-line tool](#21-as-a-command-line-tool)
+  - [2.2. As a pre-commit hook](#22-as-a-pre-commit-hook)
+  - [2.3. Configuration options](#23-configuration-options)
+- [3. Instructions for Maintainers](#3-instructions-for-maintainers)
 
 <!--TOC-->
 
-## 1. How does `format-json` differs from `pretty-format-json`?
+## 1. `format-json` vs `pretty-format-json`
 
-| Feature                            | format-json | pretty-format-json |
-| ---------------------------------- | ----------- | ------------------ |
-| Config option for trailing newline | ✅          | ❌                 |
+| Feature                            | format-json | pretty-format-json                                                                      |
+| ---------------------------------- | :---------: | --------------------------------------------------------------------------------------- |
+| Config option for trailing newline |     ✅      | ❌ ([Won't implement ever](https://github.com/pre-commit/pre-commit-hooks/issues/1203)) |
+| Preserves all digits of floats     |     ✅      | ❌ ([Unresolved since 2022](https://github.com/pre-commit/pre-commit-hooks/issues/780)) |
 
-## 2. Why a separate project from `pretty-format-json`?
+## 2. Usage
 
-There are oftentimes practical reasons for JSON files to **not** have a
-trailing newline.
-
-But the maintainers of `pretty-format-json`
-[hard-coded a newline](https://github.com/pre-commit/pre-commit-hooks/blob/3fed74c572621f74eaffba6603801d153ffe5ce0/pre_commit_hooks/pretty_format_json.py#L30)
-at the end of the formatted JSON, and they
-[chose not to offer a configuration option for this](https://github.com/pre-commit/pre-commit-hooks/issues/1203).
-
-## 3. Usage
-
-### 3.1. As a command-line tool
+### 2.1. As a command-line tool
 
 First, install it:
 
@@ -51,9 +42,11 @@ format-json --autofix --no-eof-newline path/to/file.json
 ```
 
 All command-line options from `pretty-format-json` are preserved, with the new
-`--no-eof-newline` flag layered on top.
+`--no-eof-newline` flag layered on top. See
+[Section 2.3](#23-configuration-options) for the complete set of config
+options.
 
-### 3.2. As a pre-commit hook
+### 2.2. As a pre-commit hook
 
 Add the hook to your `.pre-commit-config.yaml`:
 
@@ -67,7 +60,22 @@ Add the hook to your `.pre-commit-config.yaml`:
 
 (You can choose your own args.)
 
-## 4. Instructions for Maintainers
+### 2.3. Configuration options
+
+`format-json` accepts the same options whether invoked via the CLI or
+pre-commit. Combine them as needed for your workflow:
+
+- `--autofix` - automatically format json files
+- `--indent ...` - Control the indentation (either a number for a number of
+  spaces or a string of whitespace). Defaults to 2 spaces.
+- `--no-ensure-ascii` preserve unicode characters instead of converting to
+  escape sequences
+- `--no-sort-keys` - when autofixing, retain the original key ordering (instead
+  of sorting the keys)
+- `--top-keys comma,separated,keys` - Keys to keep at the top of mappings.
+- `--no-eof-newline`: omit the trailing newline (format-json only).
+
+## 3. Instructions for Maintainers
 
 - Run `pip install -e .` to install this project in the "editable" mode.
 - Run `pip install -r requirements.dev` to install developer dependencies.
