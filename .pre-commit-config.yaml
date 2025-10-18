@@ -1,0 +1,70 @@
+---
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+        exclude: ^tests/test_data/
+      - id: end-of-file-fixer
+        exclude: ^tests/test_data/
+      - id: debug-statements
+        exclude: ^tests/test_data/
+      - id: double-quote-string-fixer
+        exclude: ^tests/test_data/
+      - id: requirements-txt-fixer
+        exclude: (\.ipynb$)|(^tests/test_data/)
+      - id: check-added-large-files
+        args: [--maxkb=1000]
+        exclude: ^tests/test_data/
+      - id: check-toml
+        exclude: ^tests/test_data/
+      - id: check-yaml
+        exclude: ^tests/test_data/
+      - id: name-tests-test
+        args: [--pytest-test-first]
+        exclude: ^tests/test_data/|^tests/helpers\.py$
+      - id: check-merge-conflict
+        exclude: ^tests/test_data/
+  - repo: https://github.com/asottile/pyupgrade
+    rev: v3.20.0
+    hooks:
+      - id: pyupgrade
+        args: [--py310-plus]
+        exclude: ^tests/test_data/
+  - repo: https://github.com/jsh9/muff-pre-commit
+    rev: 0.13.2
+    hooks:
+      - id: muff-format
+        args: [--config, muff.toml]
+        exclude: ^tests/test_data/
+  - repo: https://github.com/jsh9/blank-line-after-blocks
+    rev: 0.1.4
+    hooks:
+      - id: blank-line-after-blocks
+        exclude: ^tests/test_data/
+      - id: blank-line-after-blocks-jupyter
+        exclude: ^tests/test_data/
+  - repo: https://github.com/lyz-code/yamlfix
+    rev: 1.18.0
+    hooks:
+      - id: yamlfix
+        exclude: ^tests/test_data/
+  - repo: https://github.com/hukkin/mdformat
+    rev: 1.0.0
+    hooks:
+      - id: mdformat
+        args: [--wrap, '79', --number]
+        additional_dependencies: [mdformat-gfm]
+        exclude: ^tests/test_data/
+  - repo: https://github.com/jsh9/markdown-toc-creator
+    rev: 0.0.11
+    hooks:
+      - id: markdown-toc-creator
+        exclude: ^tests/test_data/
+  - repo: local
+    hooks:
+      - id: ensure-pretty-format-json-upstream
+        name: Ensure upstream pretty_format_json.py is unchanged
+        language: system
+        entry: python .pre_commit_hook_script/ensure_pretty_format_json_commit.py
+        pass_filenames: false
