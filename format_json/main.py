@@ -5,8 +5,90 @@ from __future__ import annotations
 import argparse
 import json
 import sys
-from collections.abc import Mapping, Sequence
+from collections.abc import Iterator, Mapping, Sequence
 from difflib import unified_diff
+from json.encoder import (
+    _make_iterencode,
+    encode_basestring,
+    encode_basestring_ascii,
+)
+from typing import cast
+
+
+class OriginalTokenFloat(float):
+    """float subclass that retains the original JSON token verbatim."""
+
+    __slots__ = ('raw',)
+
+    raw: str
+
+    def __new__(cls, value: str) -> OriginalTokenFloat:
+        obj = cast(OriginalTokenFloat, super().__new__(cls, float(value)))
+        obj.raw = value
+        return obj
+
+
+class DecimalPreservingEncoder(json.JSONEncoder):
+    """JSON encoder that keeps high precision floats exactly as provided."""
+
+    def iterencode(self, o: object, _one_shot: bool = False) -> Iterator[str]:
+        if self.check_circular:
+            markers: dict[int, object] | None = {}
+        else:
+            markers = None
+
+        if self.ensure_ascii:
+            string_encoder = encode_basestring_ascii
+        else:
+            string_encoder = encode_basestring
+
+        def floatstr(
+                value: float,
+                allow_nan: bool = self.allow_nan,
+                _repr=repr,
+                _inf=float('inf'),
+                _neginf=-float('inf'),
+        ) -> str:
+            if isinstance(value, OriginalTokenFloat):
+                return value.raw
+
+            if value != value:
+                text = 'NaN'
+            elif value == _inf:
+                text = 'Infinity'
+            elif value == _neginf:
+                text = '-Infinity'
+            else:
+                return _repr(value)
+
+            if not allow_nan:
+                raise ValueError(
+                    'Out of range float values are not JSON compliant',
+                )
+
+            return text
+
+        if self.indent is not None:
+            if isinstance(self.indent, str):
+                indent_value: str | None = self.indent
+            else:
+                indent_value = ' ' * self.indent
+        else:
+            indent_value = None
+
+        _iterencode = _make_iterencode(
+            markers,
+            self.default,
+            string_encoder,
+            indent_value,
+            floatstr,
+            self.key_separator,
+            self.item_separator,
+            self.sort_keys,
+            self.skipkeys,
+            _one_shot,
+        )
+        return _iterencode(o, 0)
 
 
 def _get_pretty_format(
@@ -29,9 +111,14 @@ def _get_pretty_format(
         return dict(before + after)
 
     json_pretty = json.dumps(
-        json.loads(contents, object_pairs_hook=pairs_first),
+        json.loads(
+            contents,
+            object_pairs_hook=pairs_first,
+            parse_float=OriginalTokenFloat,
+        ),
         indent=indent,
         ensure_ascii=ensure_ascii,
+        cls=DecimalPreservingEncoder,
     )
     return f'{json_pretty}\n' if newline_at_end else json_pretty
 
