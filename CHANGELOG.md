@@ -8,6 +8,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+- Added
+  - Skip formatting Jupyter notebooks via `exclude_types: [jupyter]`
+
 ## [0.1.0] - 2025-10-17
 
 - Added
