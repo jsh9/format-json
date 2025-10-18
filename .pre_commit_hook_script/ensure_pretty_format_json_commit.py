@@ -14,8 +14,9 @@ EXPECTED_COMMIT = 'a49f812a96daf371c3122ee1572d1cf62da61d74'
 API_URL = 'https://api.github.com/repos/pre-commit/pre-commit-hooks/commits'
 FILE_PATH = 'pre_commit_hooks/pretty_format_json.py'
 TIMEOUT_SECONDS = 10
-MAX_ATTEMPTS = 5
+MAX_ATTEMPTS = 50
 BASE_BACKOFF_SECONDS = 2
+RATE_LIMIT_BACKOFF_SECONDS = 15
 
 
 def main() -> int:
@@ -47,7 +48,11 @@ def main() -> int:
                     print(f'Unable to parse response from GitHub: {exc}')
                     return 1
         except urllib.error.HTTPError as exc:
-            backoff = min(BASE_BACKOFF_SECONDS * attempt, 30)
+            backoff = (
+                RATE_LIMIT_BACKOFF_SECONDS
+                if exc.code == 403
+                else min(BASE_BACKOFF_SECONDS * attempt, 30)
+            )
             error_msg = f'HTTP {exc.code}'
             if exc.code == 403 and attempt < MAX_ATTEMPTS:
                 print(
