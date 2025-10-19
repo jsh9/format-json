@@ -20,10 +20,10 @@ pre-commit hook, with only one difference, as seen below.
 
 ## 1. `format-json` vs `pretty-format-json`
 
-| Feature                            | format-json | pretty-format-json                                                                      |
-| ---------------------------------- | :---------: | --------------------------------------------------------------------------------------- |
-| Config option for trailing newline |     ✅      | ❌ ([Won't implement ever](https://github.com/pre-commit/pre-commit-hooks/issues/1203)) |
-| Preserves all digits of floats     |     ✅      | ❌ ([Unresolved since 2022](https://github.com/pre-commit/pre-commit-hooks/issues/780)) |
+| Feature                            | format-json | pretty-format-json                                |
+| ---------------------------------- | :---------: | ------------------------------------------------- |
+| Config option for trailing newline |     ✅      | ❌ ([Won't implement ever][won't-implement-ever]) |
+| Preserves all digits of floats     |     ✅      | ❌ ([Unresolved since 2022][unresolved-2022])     |
 
 ## 2. Usage
 
@@ -82,3 +82,6 @@ pre-commit. Combine them as needed for your workflow:
 - Run `pytest` to execute the automated tests replicated from the upstream
   project.
 - Use `tox` to exercise the full test matrix, linting, and formatting targets.
+
+[unresolved-2022]: https://github.com/pre-commit/pre-commit-hooks/issues/780
+[won't-implement-ever]: https://github.com/pre-commit/pre-commit-hooks/issues/1203
