@@ -5,9 +5,11 @@ pre-commit hook. It is adapted from the
 [`pretty-format-json`](https://github.com/pre-commit/pre-commit-hooks)
 pre-commit hook, with only one difference, as seen below.
 
-**Table of Contents:**
-
 <!--TOC-->
+
+______________________________________________________________________
+
+**Table of Contents**
 
 - [1. `format-json` vs `pretty-format-json`](#1-format-json-vs-pretty-format-json)
 - [2. Usage](#2-usage)
@@ -15,6 +17,8 @@ pre-commit hook, with only one difference, as seen below.
   - [2.2. As a pre-commit hook](#22-as-a-pre-commit-hook)
   - [2.3. Configuration options](#23-configuration-options)
 - [3. Instructions for Maintainers](#3-instructions-for-maintainers)
+
+______________________________________________________________________
 
 <!--TOC-->
 

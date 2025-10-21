@@ -5,7 +5,7 @@ working with the `format-json` project. It mirrors the canonical sources
 already in the repository (`README.md`, tests, and configuration files) so
 agents can act independently without re-deriving project context.
 
-## Project Snapshot
+## 1. Project Snapshot
 
 - Purpose: Provide a JSON formatter shipped both as a CLI (`format-json`) and a
   pre-commit hook.
@@ -15,7 +15,7 @@ agents can act independently without re-deriving project context.
 - Distribution: Configured as a Python package with an entry point in
   `format_json/main.py`.
 
-## Key Code Paths
+## 2. Key Code Paths
 
 - `format_json/main.py` exposes the CLI logic, including flag parsing and the
   formatter implementation.
@@ -30,7 +30,7 @@ agents can act independently without re-deriving project context.
   - The `--no-eof-newline` flag.
   - Diff output when `--autofix` is omitted.
 
-## CLI Usage (from README)
+## 3. CLI Usage (from README)
 
 ```bash
 pip install format-json
@@ -46,7 +46,7 @@ Important flags:
 - `--no-eof-newline`: Omits the trailing newline (new in this project).
 - `--top-keys key1,key2`: Keeps the listed keys at the top when sorting.
 
-## Pre-commit Hook
+## 4. Pre-commit Hook
 
 ```yaml
 - repo: https://github.com/jsh9/format-json
@@ -59,7 +59,7 @@ Important flags:
 Agents may adjust `args` as needed; the repository mirrors the upstream hook
 layout so migration requires minimal changes.
 
-## Development Workflow
+## 5. Development Workflow
 
 - Install dev dependencies: `pip install -e .[dev]`.
 - Run tests: `pytest` (configured via `pyproject.toml` to discover under
@@ -69,7 +69,7 @@ layout so migration requires minimal changes.
 - Additional tooling is configured in `muff.toml`, `.pre-commit-config.yaml`,
   and `tox.ini` as needed by CI.
 
-## Release & Packaging Notes
+## 6. Release & Packaging Notes
 
 - Packaging uses Hatch (`build-backend = "hatchling.build"`).
 - Source distributions bundle code, tests, README, LICENSE, changelog, tox
@@ -77,7 +77,7 @@ layout so migration requires minimal changes.
 - Metadata points to the GitHub repository (`jsh9/format-json`) for homepage,
   issues, and source.
 
-## Operational Cues for Agents
+## 7. Operational Cues for Agents
 
 - Treat an exit code of `1` from the CLI as “changes required” rather than a
   hard failure; rerun with `--autofix` when appropriate.
