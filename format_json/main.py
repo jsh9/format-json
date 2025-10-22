@@ -4,15 +4,19 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
+import pathlib
 import sys
-from collections.abc import Callable, Iterator, Mapping, Sequence
 from difflib import unified_diff
 from json.encoder import (  # type:ignore[attr-defined]
-    _make_iterencode,
+    _make_iterencode,  # noqa: PLC2701
     encode_basestring,
     encode_basestring_ascii,
 )
-from typing import Any
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from collections.abc import Callable, Iterator, Mapping, Sequence
 
 
 class OriginalTokenFloat(float):
@@ -22,7 +26,7 @@ class OriginalTokenFloat(float):
 
     raw: str
 
-    def __new__(cls, value: str) -> OriginalTokenFloat:
+    def __new__(cls, value: str) -> OriginalTokenFloat:  # noqa: PYI034, to be fixed when py310 is deprecated
         """Instantiate an `OriginalTokenFloat` while storing the raw token."""
         obj = super().__new__(cls, float(value))
         obj.raw = value
@@ -54,7 +58,7 @@ class DecimalPreservingEncoder(json.JSONEncoder):
             if isinstance(value, OriginalTokenFloat):
                 return value.raw
 
-            if value != value:
+            if math.isnan(value):
                 text = 'NaN'
             elif value == _inf:
                 text = 'Infinity'
@@ -78,7 +82,7 @@ class DecimalPreservingEncoder(json.JSONEncoder):
         else:
             indent_value = None
 
-        _iterencode = _make_iterencode(
+        iterencode = _make_iterencode(
             markers,
             self.default,
             string_encoder,
@@ -90,7 +94,7 @@ class DecimalPreservingEncoder(json.JSONEncoder):
             self.skipkeys,
             _one_shot,
         )
-        return _iterencode(o, 0)  # type:ignore[no-any-return]
+        return iterencode(o, 0)  # type:ignore[no-any-return]
 
 
 def _get_pretty_format(
@@ -127,7 +131,7 @@ def _get_pretty_format(
 
 def _autofix(filename: str, new_contents: str) -> None:
     print(f'Fixing file {filename}')
-    with open(filename, 'w', encoding='UTF-8') as f:
+    with pathlib.Path(filename).open('w', encoding='UTF-8') as f:
         f.write(new_contents)
 
 
@@ -209,7 +213,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     status = 0
 
     for json_file in args.filenames:
-        with open(json_file, encoding='UTF-8') as f:
+        with pathlib.Path(json_file).open(encoding='UTF-8') as f:
             contents = f.read()
 
         try:
